@@ -3,9 +3,9 @@
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [dotenv :refer [env]]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]))
-
 
 (defn get-card-by-id [id] {:id id :name "Jhon Paterson"})
 
@@ -59,16 +59,18 @@
 
 
 (defn -main
-  "A very simple web server using Ring & Jetty Production mode operation, no reloading."
-  [port]
-  (webserver/run-jetty
-   app
-   {:port  (Integer. port)}))
+  [& [port]]
+  (let [port (Integer. (or port (env "PORT") 3000))]
+    (webserver/run-jetty
+     app
+     {:port  (Integer. port)})))
 
 (defn -dev-main
-  "A very simple web server using Ring & Jetty, called via the development profile of Leiningen which reloads code changes using ring middleware wrap-reload"
-  [port]
-  (webserver/run-jetty
-   (wrap-reload #'app)
-   {:port (Integer. port)
-    :join? false}))
+  [& [port]]
+  (let [port (Integer. (or port (env "PORT") 3000))]
+    (webserver/run-jetty
+     (wrap-reload #'app)
+     {:port (Integer. port)
+      :join? false})))
+
+(env :PORT)
