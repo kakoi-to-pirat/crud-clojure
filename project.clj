@@ -17,6 +17,6 @@
              {:main client-card.core/-dev-main
               :plugins [[lein-githooks "0.1.0"]
                         [lein-cljfmt "0.6.8"]]
-              :githooks {:auto-install true
+              :githooks {:auto-install false
                          :pre-push ["lein uberjar"]
                          :pre-commit ["lein check" "lein cljfmt check" "lein test"]}}})
