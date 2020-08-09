@@ -32,3 +32,7 @@ Open [http://localhost:8080](http://localhost:8080)
 ## Run compiled application
 
 ```java -cp target/client-card.jar clojure.main -m client-card.core```
+
+## Add githooks
+
+```lein githooks install```
