@@ -5,7 +5,8 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [dotenv :refer [env]]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
-            [compojure.route :refer [not-found]]))
+            [compojure.route :refer [not-found]]
+            [client-card.db  :as db]))
 
 (defn get-card-by-id [id] {:id id :name "Jhon Paterson"})
 
@@ -53,6 +54,20 @@
   (PUT "/card/:id" [] (wrap-params (wrap-keyword-params card-update)))
   (DELETE "/card/:id" [] card-delete)
   (not-found not-found-view))
+
+
+;; DATABASE MIGRATIONS
+
+
+(defn apply-migrations []
+  (if-not (db/db-schema-migrated?)
+    (db/create-users-table)
+    (println "Migarations already was apllyed")))
+
+(defn undo-migrations []
+  (if (db/db-schema-migrated?)
+    (db/drop-users-table)
+    (println "Migarations already was rolled back")))
 
 
 ;; SERVER

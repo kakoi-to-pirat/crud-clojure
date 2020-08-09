@@ -7,7 +7,9 @@
                  [lynxeyes/dotenv "1.0.2"]
                  [lein-githooks "0.1.0"]
                  [lein-cljfmt "0.6.8"]
-                 [hiccup "1.0.5"]]
+                 [hiccup "1.0.5"]
+                 [org.clojure/java.jdbc "0.7.11"]
+                 [org.postgresql/postgresql "42.2.14"]]
   :repl-options {:init-ns client-card.core}
   :main client-card.core
   :min-lein-version "2.5.0"
