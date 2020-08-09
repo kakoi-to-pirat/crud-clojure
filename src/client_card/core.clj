@@ -58,6 +58,8 @@
 ;; SERVER
 
 
+(defonce server (atom nil))
+
 (defn -main
   [& [port]]
   (let [port (Integer. (or port (env "PORT") 3000))]
@@ -68,9 +70,11 @@
 (defn -dev-main
   [& [port]]
   (let [port (Integer. (or port (env "PORT") 3000))]
-    (webserver/run-jetty
-     (wrap-reload #'app)
-     {:port (Integer. port)
-      :join? false})))
+    (reset! server (webserver/run-jetty
+                    (wrap-reload #'app)
+                    {:port (Integer. port)
+                     :join? false}))))
 
-(env :PORT)
+(defn stop-server []
+  (.stop @server)
+  (reset! server nil))

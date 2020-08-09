@@ -10,6 +10,8 @@ Connect your relp client to [http://localhost:7888](http://localhost:7888)
 
 Start dev-server in repl: ```(-dev-main)```
 
+Stop dev-server in repl: ```(stop-server)```
+
 OR
 
 Start local: ```lein with-profile dev run```
