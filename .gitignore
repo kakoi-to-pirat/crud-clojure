@@ -16,3 +16,5 @@ pom.xml.asc
 .env
 .env.*
 !.env.dev
+
+/pgdata
