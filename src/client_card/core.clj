@@ -60,13 +60,13 @@
 
 
 (defn apply-migrations []
-  (if-not (db/db-schema-migrated?)
-    (db/create-users-table)
+  (if-not (db/db-schema-migrated? "cards")
+    (db/create-cards-table)
     (println "Migarations already was apllyed")))
 
 (defn undo-migrations []
-  (if (db/db-schema-migrated?)
-    (db/drop-users-table)
+  (if (db/db-schema-migrated? "cards")
+    (db/drop-cards-table)
     (println "Migarations already was rolled back")))
 
 

@@ -29,19 +29,20 @@
 ;; MIGRATIONS
 
 
-(defn db-schema-migrated? []
+(defn db-schema-migrated? [table-name]
   (-> (sql/query db-spec
-                 [(str "select count(*) from information_schema.tables "
-                       "where table_name='cards'")])
+                 ["SELECT count (*) 
+                   FROM information_schema.tables
+                   WHERE table_name = ?" table-name])
       first :count pos?))
 
-(defn create-users-table []
+(defn create-cards-table []
   (sql/db-do-commands db-spec cards-table-ddl)
-  (println "Users table was created is sucssesful"))
+  (println "Client cards table was created is sucssesful"))
 
-(defn drop-users-table []
+(defn drop-cards-table []
   (sql/db-do-commands db-spec [(sql/drop-table-ddl :cards)])
-  (println "Users table was removed is sucssesful"))
+  (println "Client cards table was removed is sucssesful"))
 
 
 ;; QUERY OF CARDS
