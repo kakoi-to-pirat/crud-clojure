@@ -66,7 +66,7 @@
 
 (defn not-found-view []
   (template [:div {:class "not-found-page"}
-             [:h2 "This is not the page you are looking for"]
+             [:h2 "There is no page you are looking for"]
              [:p "Sorry, the page you requested was not found!"]]))
 
 (defn error-view [error]
