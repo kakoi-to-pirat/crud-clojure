@@ -34,11 +34,11 @@
 
 (defn create-cards-table []
   (sql/db-do-commands db-spec cards-table-ddl)
-  (println "Client cards table was created is sucssesful"))
+  (println "Client cards table was created is successful"))
 
 (defn drop-cards-table []
   (sql/db-do-commands db-spec [(sql/drop-table-ddl :cards)])
-  (println "Client cards table was removed is sucssesful"))
+  (println "Client cards table was removed is successful"))
 
 
 ;; -------------------------
@@ -55,12 +55,12 @@
 (defn apply-migrations []
   (if-not (db-schema-migrated? "cards")
     (create-cards-table)
-    (println "Migarations already was apllyed")))
+    (println "Migrations already was apllyed")))
 
 (defn undo-migrations []
   (if (db-schema-migrated? "cards")
     (drop-cards-table)
-    (println "Migarations already was rolled back")))
+    (println "Migrations already was rolled back")))
 
 
 ;; -------------------------

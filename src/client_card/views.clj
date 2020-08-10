@@ -14,7 +14,7 @@
    (head)
    [:body
     [:main {:class "app"}
-     [:h1 "Client cards menager"]
+     [:h1 "Client cards manager"]
      [:section {:class "card-section"}
       [:nav {:class "navbar"}
        [:a {:href "/"} "All cards"]
@@ -35,7 +35,7 @@
              [:th birthday]
              [:th [:a {:href (format "/card/edit/%s" id)} "Edit"]]
              [:th [:form {:action (format "/card/delete/%s" id) :method "POST"}
-                   [:button {:type "submith"} "Delete"]]]]))
+                   [:button {:type "submit"} "Delete"]]]]))
         cards)])
 
 (defn index-view [cards]
@@ -53,15 +53,16 @@
        [:input {:type "text" :name "full_name" :value full_name :maxlength "100"}]]
       [:label {:class "card-form__label"} "Gender: "
        [:select {:name "gender"}
-        [:option {:value "man" :selected (= gender "man")} "man"]
-        [:option {:value "wooman" :selected (= gender "wooman")} "wooman"]]]
+        [:option {:value "Male" :selected (= gender "Male")} "Male"]
+        [:option {:value "Female" :selected (= gender "Female")} "Female"]
+        [:option {:value "Other" :selected (= gender "Other")} "Other"]]]
       [:label {:class "card-form__label"} "Address: "
        [:input {:type "text" :name "address" :value address :maxlength "100"}]]
       [:label {:class "card-form__label"} "Birthday: "
        [:input {:type "date" :name "birthday" :value birthday}]]
       [:label {:class "card-form__label"} "Policy ID: "
        [:input {:type "number" :name "id_policy" :value id_policy :maxlength "11"}]]
-      [:button {:class "card-form__submith" :type "submith"} "Save"]])))
+      [:button {:class "card-form__submit" :type "submit"} "Save"]])))
 
 (defn not-found-view []
   (template [:div {:class "not-found-page"}

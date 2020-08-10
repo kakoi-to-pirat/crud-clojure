@@ -38,3 +38,9 @@ Open [http://localhost:8080](http://localhost:8080)
 ## Add githooks
 
 ```lein githooks install```
+
+## Migrations
+
+```core.db => (apply-migrations)```
+
+```core.db => (undo-migrations)```
