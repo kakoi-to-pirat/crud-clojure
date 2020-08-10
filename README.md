@@ -14,6 +14,8 @@ Stop dev-server in repl: ```(stop-server)```
 
 OR
 
+Run database: ```docker-compose start postgres```
+
 Start local: ```lein with-profile dev run```
 
 ## Build container to production

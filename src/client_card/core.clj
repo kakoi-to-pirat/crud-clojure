@@ -6,7 +6,7 @@
             [ring.util.response :refer [redirect]]
             [dotenv :refer [env]]
             [compojure.core :refer [defroutes GET POST]]
-            [compojure.route :refer [not-found]]
+            [compojure.route :refer [not-found resources]]
             [client-card.db  :as db]
             [client-card.views :as views]))
 
@@ -81,6 +81,7 @@
   (POST "/card/update/:id" [] (wrap-params (wrap-keyword-params card-update-handler)))
   (POST "/card/delete/:id" [id] (card-delete-handler id))
 
+  (resources "/")
   (not-found not-found-handler))
 
 

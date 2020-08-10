@@ -6,8 +6,7 @@
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport"
            :content "width=device-width, initial-scale=1"}]
-  ;;  (include-css "/css/site.css")
-   ])
+   (include-css "app.css")])
 
 (defn template [content]
   (html5
