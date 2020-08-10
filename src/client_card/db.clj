@@ -2,6 +2,7 @@
   (:require [clojure.java.jdbc :as sql]))
 
 
+;; -------------------------
 ;; CONFIG
 
 
@@ -14,27 +15,22 @@
               :password "postgres"})
 
 
+;; -------------------------
 ;; DDL
 
 
 (def cards-table-ddl (sql/create-table-ddl :cards
                                            [[:id "SERIAL PRIMARY KEY"]
-                                            [:full_name "varchar(100)"]
-                                            [:gender "varchar(30)"]
-                                            [:address "varchar(100)"]
-                                            [:birthday :timestamp]
-                                            [:id_policy "integer"]]))
+                                            [:full_name "VARCHAR(100)"]
+                                            [:gender "VARCHAR(10)"]
+                                            [:address "VARCHAR(100)"]
+                                            [:birthday :date]
+                                            [:id_policy "BIGINT UNIQUE"]]))
 
 
+;; -------------------------
 ;; MIGRATIONS
 
-
-(defn db-schema-migrated? [table-name]
-  (-> (sql/query db-spec
-                 ["SELECT count (*) 
-                   FROM information_schema.tables
-                   WHERE table_name = ?" table-name])
-      first :count pos?))
 
 (defn create-cards-table []
   (sql/db-do-commands db-spec cards-table-ddl)
@@ -45,6 +41,29 @@
   (println "Client cards table was removed is sucssesful"))
 
 
+;; -------------------------
+;; APPLY MIGRATIONS
+
+
+(defn db-schema-migrated? [table-name]
+  (-> (sql/query db-spec
+                 ["SELECT count (*) 
+                   FROM information_schema.tables
+                   WHERE table_name = ?" table-name])
+      first :count pos?))
+
+(defn apply-migrations []
+  (if-not (db-schema-migrated? "cards")
+    (create-cards-table)
+    (println "Migarations already was apllyed")))
+
+(defn undo-migrations []
+  (if (db-schema-migrated? "cards")
+    (drop-cards-table)
+    (println "Migarations already was rolled back")))
+
+
+;; -------------------------
 ;; QUERY OF CARDS
 
 
@@ -58,14 +77,14 @@
   (let [{:keys [full_name, gender, address, birthday, id_policy]} data]
     (sql/execute! db-spec ["INSERT INTO 
                             cards (full_name, gender, address, birthday, id_policy) 
-                            VALUES (?, ?, ?, ?::timestamp, ?)"
+                            VALUES (?, ?, ?, ?::date, ?::bigint)"
                            full_name gender address birthday id_policy])))
 
 (defn update-card [id data]
   (let [{:keys [full_name, gender, address, birthday, id_policy]} data]
     (sql/execute! db-spec ["UPDATE public.cards 
-                            SET full_name = ?, gender = ?, address = ?, birthday = ?::timestamp, id_policy = ?
-                            WHERE id = ?"
+                            SET full_name = ?, gender = ?, address = ?, birthday = ?::date, id_policy = ?::bigint
+                            WHERE id = ?::integer"
                            full_name gender address birthday id_policy id])))
 
 (defn delete-card [id]
