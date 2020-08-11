@@ -2,6 +2,8 @@
 
 This is demo CRUD app in Clojure.Implemented the basic functionality of CRUD operations for a medical card of the client.
 
+[DEMO](https://mysterious-fjord-76492.herokuapp.com/)
+
 ## Run dev mode
 
 Start in container: ```docker compose up```
