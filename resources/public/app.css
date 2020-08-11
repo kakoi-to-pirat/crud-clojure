@@ -55,7 +55,7 @@
     display: flex;
     justify-content: center;
 
-    margin-bottom: 13px;
+    margin-bottom: 35px;
 }
 
 .card-section__navbar-link
@@ -87,7 +87,7 @@
     display: flex;
     flex-direction: column;
 
-    margin-bottom: 15px;
+    margin-bottom: 30px;
 }
 
 .card-form__label input
