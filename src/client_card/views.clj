@@ -57,7 +57,7 @@
       [:label {:class "card-form__label"} "Address: "
        [:input {:type "text" :name "address" :value address :maxlength "100" :required true}]]
       [:label {:class "card-form__label"} "Birthday: "
-       [:input {:type "date" :name "birthday" :value birthday :required true}]]
+       [:input {:type "date" :name "birthday" :value birthday :min "1920-01-01" :required true}]]
       [:label {:class "card-form__label"} "Policy ID: "
        [:input {:type "number" :name "id_policy" :value id_policy :maxlength "11" :required true}]]
       [:button {:class "card-form__submit app__button" :type "submit"} (if id "Update card" "Add new card")]])))
