@@ -51,18 +51,24 @@
         {:keys [id]} params]
     (try (db/update-card (Integer. id) params)
          (redirect "/")
-         (catch Exception e (views/error-view (.getMessage e))))))
+         (catch Exception e {:status 500
+                             :headers {"Content-Type" "text/html"}
+                             :body (views/error-view (.getMessage e))}))))
 
 (defn card-save-handler [request]
   (let [{:keys [params]} request]
     (try (db/create-card params)
          (redirect "/")
-         (catch Exception e (views/error-view (.getMessage e))))))
+         (catch Exception e {:status 500
+                             :headers {"Content-Type" "text/html"}
+                             :body (views/error-view (.getMessage e))}))))
 
 (defn card-delete-handler [id]
   (try (db/delete-card (Integer. id))
        (redirect "/")
-       (catch Exception e (views/error-view (.getMessage e)))))
+       (catch Exception e {:status 500
+                           :headers {"Content-Type" "text/html"}
+                           :body (views/error-view (.getMessage e))})))
 
 (def not-found-handler (views/not-found-view))
 
