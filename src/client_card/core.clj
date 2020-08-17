@@ -100,7 +100,7 @@
 (defn -main
   [& [port]]
   (let [port (Integer. (or port (env "PORT") 3000))]
-    (db/apply-migrations)
+    (db/migrate-up)
     (webserver/run-jetty
      app
      {:port  (Integer. port)})))
@@ -108,7 +108,7 @@
 (defn -dev-main
   [& [port]]
   (let [port (Integer. (or port (env "PORT") 3000))]
-    (db/apply-migrations)
+    (db/migrate-up)
     (reset! server (webserver/run-jetty
                     (wrap-reload #'app)
                     {:port (Integer. port)
@@ -117,3 +117,8 @@
 (defn stop-server []
   (.stop @server)
   (reset! server nil))
+
+(comment
+  (-main)
+  (-dev-main)
+  (stop-server))

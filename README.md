@@ -45,6 +45,6 @@ Open [http://localhost:8080](http://localhost:8080)
 
 ## Migrations
 
-```core.db => (apply-migrations)```
+```core.db => (migrate-up)```
 
-```core.db => (undo-migrations)```
+```core.db => (migrate-down)```

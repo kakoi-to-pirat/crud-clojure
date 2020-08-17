@@ -1,5 +1,5 @@
 (ns client-card.core-test
-  (:require [clojure.test :refer [deftest testing is]]
+  (:require [clojure.test :refer [deftest testing is use-fixtures]]
             [client-card.core :as core]
             [client-card.db :as db]
             [clojure.string :as string]
@@ -22,22 +22,29 @@
 
 (defn get-card [id] (filter #(= (:id %) id) cards))
 
+(defn database-for-tests [all-tests]
+  (db/migrate-down)
+  (db/migrate-up)
+  (doseq [c cards] (db/create-card c))
+  (all-tests))
+
+(use-fixtures :once database-for-tests)
+
 (deftest index-handler
   (testing "Is correctly response"
-    (with-redefs [db/get-all-cards (fn [] cards)]
-      (let [{:keys [status headers body]} (core/index-handler {})]
-        (is (= status 200))
-        (is (= headers {"Content-Type" "text/html"}))
+    (let [{:keys [status headers body]} (core/app {:uri "/" :request-method :get})]
+      (is (= status 200))
+      (is (= headers {"Content-Type" "text/html"}))
 
-        (is (string/includes? body (:full_name (first cards))))
-        (is (string/includes? body (:address (first cards))))
-        (is (string/includes? body (:birthday (first cards))))
-        (is (string/includes? body (str (:id_policy (first cards)))))
+      (is (string/includes? body (:full_name (first cards))))
+      (is (string/includes? body (:address (first cards))))
+      (is (string/includes? body (:birthday (first cards))))
+      (is (string/includes? body (str (:id_policy (first cards)))))
 
-        (is (string/includes? body (:full_name (second cards))))
-        (is (string/includes? body (:address (second cards))))
-        (is (string/includes? body (:birthday (second cards))))
-        (is (string/includes? body (str (:id_policy (second cards)))))))))
+      (is (string/includes? body (:full_name (second cards))))
+      (is (string/includes? body (:address (second cards))))
+      (is (string/includes? body (:birthday (second cards))))
+      (is (string/includes? body (str (:id_policy (second cards))))))))
 
 (deftest card-view-handler
   (testing "Is correctly response"

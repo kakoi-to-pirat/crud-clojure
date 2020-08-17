@@ -10,7 +10,9 @@
                  [hiccup "1.0.5"]
                  [org.clojure/java.jdbc "0.7.11"]
                  [org.postgresql/postgresql "42.2.14"]
-                 [mock-clj "0.2.1"]]
+                 [mock-clj "0.2.1"]
+                 [environ "1.2.0"]]
+  :plugins [[lein-environ "1.2.0"]]
   :repl-options {:init-ns client-card.core}
   :main client-card.core
   :min-lein-version "2.5.0"
@@ -22,4 +24,6 @@
                         [lein-cljfmt "0.6.8"]]
               :githooks {:auto-install false
                          :pre-push ["lein uberjar"]
-                         :pre-commit ["lein check" "lein cljfmt check" "lein test"]}}})
+                         :pre-commit ["lein check" "lein cljfmt check" "lein test"]}
+              :env {:environment "development"}}
+              :test {:env {:environment "test"}}})

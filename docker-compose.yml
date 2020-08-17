@@ -1,7 +1,8 @@
 version: "3.3"
 services:
-    app:
+    client-card-app:
         image: clojure:lein
+        container_name: cliet-card-app
         volumes:
             - .:/home/app
         working_dir: /home/app
@@ -13,7 +14,7 @@ services:
             - "7888:7888"
             - "3000:3000"
 
-    postgres:
+    client-card-db:
         image: postgres
         container_name: cliet-card-db
         environment:
@@ -23,3 +24,14 @@ services:
             - ./pgdata:/var/lib/postgresql/data
         ports:
             - "5432:5432"
+
+    client-card-db-test:
+        image: postgres
+        container_name: cliet-card-db-test
+        environment:
+            POSTGRES_PASSWORD: postgresql
+            POSTGRES_USER: postgres
+        volumes:
+            - ./pgdatatest:/var/lib/postgresql/data
+        ports:
+            - "5433:5432"
