@@ -3,6 +3,7 @@
   :url "https://github.com/kakoi-to-pirat/crud-clojure"
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [ring "1.8.1"]
+                 [ring/ring-json "0.5.0"]
                  [compojure "1.6.1"]
                  [lynxeyes/dotenv "1.0.2"]
                  [lein-githooks "0.1.0"]
@@ -10,6 +11,7 @@
                  [hiccup "1.0.5"]
                  [org.clojure/java.jdbc "0.7.11"]
                  [org.postgresql/postgresql "42.2.14"]
+                 [org.clojure/data.json "1.0.0"]
                  [mock-clj "0.2.1"]
                  [environ "1.2.0"]]
   :plugins [[lein-environ "1.2.0"]]
@@ -25,4 +27,4 @@
                          :pre-push ["lein uberjar"]
                          :pre-commit ["lein check" "lein cljfmt check" "lein test"]}
               :env {:environment "development"}}
-              :test {:env {:environment "test"}}})
+             :test {:env {:environment "test"}}})

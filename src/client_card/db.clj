@@ -56,10 +56,14 @@
 
 
 (defn get-all-cards []
-  (sql/query (config/get-db-spec) ["SELECT * FROM cards"]))
+  (sql/query (config/get-db-spec) ["SELECT 
+                                    id, full_name, gender, address, birthday::VARCHAR, id_policy 
+                                    FROM cards"]))
 
 (defn get-card [id]
-  (sql/query (config/get-db-spec) ["SELECT * FROM cards WHERE id = ?" id]))
+  (sql/query (config/get-db-spec) ["SELECT 
+                                    id, full_name, gender, address, birthday::VARCHAR, id_policy 
+                                    FROM cards WHERE id = ?" id]))
 
 (defn create-card [data]
   (let [{:keys [full_name, gender, address, birthday, id_policy]} data]
@@ -79,3 +83,7 @@
   (sql/execute! (config/get-db-spec) ["DELETE FROM cards WHERE id = ?" id]))
 
 (defn q [sql] (sql/query (config/get-db-spec) [sql]))
+
+(comment
+  (get-all-cards)
+  (get-card 1))

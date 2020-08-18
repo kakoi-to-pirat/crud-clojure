@@ -1,15 +1,18 @@
 (ns client-card.core
   (:require [ring.adapter.jetty :as webserver]
             [ring.middleware.reload :refer [wrap-reload]]
-            [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [ring.util.response :refer [redirect]]
+            [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
+            [ring.util.response :refer [response status]]
             [dotenv :refer [env]]
             [environ.core :as environ]
-            [compojure.core :refer [defroutes GET POST]]
+            [compojure.core :refer [defroutes GET POST PUT DELETE]]
             [compojure.route :refer [not-found resources]]
             [client-card.db  :as db]
             [client-card.views :as views]))
+
+(defn response-error [error]
+  (status (response {:error (.getMessage error)}) 500))
 
 
 ;; -------------------------
@@ -17,60 +20,33 @@
 
 
 (defn index-handler [request]
-  (try {:status 200
-        :headers {"Content-Type" "text/html"}
-        :body (views/index-view (vec (db/get-all-cards)))}
-       (catch Exception e {:status 500
-                           :headers {"Content-Type" "text/html"}
-                           :body (views/error-view (.getMessage e))})))
+  (try (response (db/get-all-cards))
+       (catch Exception e (response-error e))))
 
 (defn card-view-handler [id]
-  (try {:status 200
-        :headers {"Content-Type" "text/html"}
-        :body (views/card-view (first (db/get-card (Integer. id))))}
-       (catch Exception e {:status 500
-                           :headers {"Content-Type" "text/html"}
-                           :body (views/error-view (.getMessage e))})))
-
-(defn card-edit-handler [id]
-  (try {:status 200
-        :headers {"Content-Type" "text/html"}
-        :body (views/card-form-view (first (db/get-card (Integer. id))))}
-       (catch Exception e {:status 500
-                           :headers {"Content-Type" "text/html"}
-                           :body (views/error-view (.getMessage e))})))
-
-(defn card-add-handler []
-  (try {:status 200
-        :headers {"Content-Type" "text/html"}
-        :body (views/card-form-view)}
-       (catch Exception e {:status 500
-                           :headers {"Content-Type" "text/html"}
-                           :body (views/error-view (.getMessage e))})))
+  (try  (response (db/get-card (Integer. id)))
+        (catch Exception e (response-error e))))
 
 (defn card-update-handler [request]
   (let [{:keys [params]} request
         {:keys [id]} params]
-    (try (db/update-card (Integer. id) params)
-         (redirect "/")
-         (catch Exception e {:status 500
-                             :headers {"Content-Type" "text/html"}
-                             :body (views/error-view (.getMessage e))}))))
+    (try
+      (db/update-card (Integer. id) params)
+      (response {:updated-card params})
+      (catch Exception e (response-error e)))))
 
 (defn card-save-handler [request]
   (let [{:keys [params]} request]
-    (try (db/create-card params)
-         (redirect "/")
-         (catch Exception e {:status 500
-                             :headers {"Content-Type" "text/html"}
-                             :body (views/error-view (.getMessage e))}))))
+    (try
+      (db/create-card params)
+      (response {:updated-card params})
+      (catch Exception e (response-error e)))))
 
 (defn card-delete-handler [id]
-  (try (db/delete-card (Integer. id))
-       (redirect "/")
-       (catch Exception e {:status 500
-                           :headers {"Content-Type" "text/html"}
-                           :body (views/error-view (.getMessage e))})))
+  (try
+    (db/delete-card (Integer. id))
+    (response {:deletes-card-id id})
+    (catch Exception e (response-error e))))
 
 (def not-found-handler (views/not-found-view))
 
@@ -80,16 +56,27 @@
 
 
 (defroutes app
-  (GET "/" [] index-handler)
-  (GET "/card/:id" [id] (card-view-handler id))
-  (GET "/card/edit/:id" [id] (card-edit-handler id))
-  (GET "/card/add/" [] (card-add-handler))
+  (GET "/" [] (-> index-handler
+                  wrap-json-response))
 
-  (POST "/card/save/" [] (wrap-params (wrap-keyword-params card-save-handler)))
-  (POST "/card/update/:id" [] (wrap-params (wrap-keyword-params card-update-handler)))
-  (POST "/card/delete/:id" [id] (card-delete-handler id))
+  (GET "/card/:id" [id] ((-> card-view-handler
+                             wrap-json-response) id))
+
+  (POST "/card/" [] (-> card-save-handler
+                        wrap-keyword-params
+                        wrap-json-params
+                        wrap-json-response))
+
+  (PUT "/card/:id" [] (-> card-update-handler
+                          wrap-keyword-params
+                          wrap-json-params
+                          wrap-json-response))
+
+  (DELETE "/card/:id" [id] ((-> card-delete-handler
+                                wrap-json-response) id))
 
   (resources "/")
+
   (not-found not-found-handler))
 
 
