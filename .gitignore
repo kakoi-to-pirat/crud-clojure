@@ -14,8 +14,6 @@ pom.xml.asc
 .calva
 
 .env
-.env.*
-!.env.dev
 
 /pgdata
 /pgdatatest

@@ -1,37 +1,43 @@
 version: "3.3"
 services:
-    client-card-app:
-        image: clojure:lein
-        container_name: cliet-card-app
-        volumes:
-            - .:/home/app
-        working_dir: /home/app
-        entrypoint: 'lein repl :headless :host 0.0.0.0 :port 7888'
-        environment:
-            PORT: 3000
-            DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/postgres'
-        ports:
-            - "7888:7888"
-            - "3000:3000"
+    # client-card-app:
+    #     image: clojure:lein
+    #     container_name: cliet-card-app
+    #     volumes:
+    #         - .:/home/app
+    #     working_dir: /home/app
+    #     entrypoint: 'lein repl :headless :host 0.0.0.0 :port 7888'
+    #     environment:
+    #         PORT: 3000
+    #         DATABASE_URL: 'postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}'
+    #     ports:
+    #         - "7888:7888"
+    #         - "3000:3000"
 
     client-card-db:
         image: postgres
         container_name: cliet-card-db
+        env_file:
+            - .env
         environment:
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_USER: postgres
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
         volumes:
             - ./pgdata:/var/lib/postgresql/data
         ports:
-            - "5432:5432"
+            - "${DB_PORT}:5432"
 
     client-card-db-test:
         image: postgres
         container_name: cliet-card-db-test
+        env_file:
+            - .env
         environment:
-            POSTGRES_PASSWORD: postgresql
-            POSTGRES_USER: postgres
+            POSTGRES_DB: ${DB_TEST_NAME}
+            POSTGRES_USER: ${DB_TEST_USER}
+            POSTGRES_PASSWORD: ${DB_TEST_PASSWORD}
         volumes:
             - ./pgdatatest:/var/lib/postgresql/data
         ports:
-            - "5433:5432"
+            - "${DB_TEST_PORT}:5432"

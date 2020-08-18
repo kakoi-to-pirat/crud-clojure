@@ -19,8 +19,7 @@
   :uberjar-name "client-card.jar"
   :aot :all
   :profiles {:dev
-             {:main client-card.core/-dev-main
-              :plugins [[lein-githooks "0.1.0"]
+             {:plugins [[lein-githooks "0.1.0"]
                         [lein-cljfmt "0.6.8"]]
               :githooks {:auto-install false
                          :pre-push ["lein uberjar"]

@@ -5,10 +5,12 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.util.response :refer [redirect]]
             [dotenv :refer [env]]
+            [environ.core :as environ]
             [compojure.core :refer [defroutes GET POST]]
             [compojure.route :refer [not-found resources]]
             [client-card.db  :as db]
             [client-card.views :as views]))
+
 
 ;; -------------------------
 ;; HANDLERS
@@ -97,28 +99,26 @@
 
 (defonce server (atom nil))
 
-(defn -main
-  [& [port]]
-  (let [port (Integer. (or port (env "PORT") 3000))]
-    (db/migrate-up)
-    (webserver/run-jetty
-     app
-     {:port  (Integer. port)})))
-
-(defn -dev-main
-  [& [port]]
-  (let [port (Integer. (or port (env "PORT") 3000))]
-    (db/migrate-up)
-    (reset! server (webserver/run-jetty
-                    (wrap-reload #'app)
-                    {:port (Integer. port)
-                     :join? false}))))
+(defn start-server [& [port]]
+  (let [port (Integer. (or (:port port) (env "APP_PORT") 3000))]
+    (if (= (environ/env :environment) "development")
+      (reset! server (webserver/run-jetty (wrap-reload #'app)
+                                          {:port port :join? false}))
+      (webserver/run-jetty app {:port port}))))
 
 (defn stop-server []
   (.stop @server)
   (reset! server nil))
 
+(defn -main []
+  (db/migrate-up)
+  (start-server))
+
+
+;; -------------------------
+;; REPL
+
+
 (comment
-  (-main)
-  (-dev-main)
+  (start-server)
   (stop-server))

@@ -21,11 +21,11 @@
 
 
 (defn create-cards-table []
-  (sql/db-do-commands (config/db-spec) cards-table-ddl)
+  (sql/db-do-commands (config/get-db-spec) cards-table-ddl)
   (println "Client cards table was created is successful"))
 
 (defn drop-cards-table []
-  (sql/db-do-commands (config/db-spec) [(sql/drop-table-ddl :cards)])
+  (sql/db-do-commands (config/get-db-spec) [(sql/drop-table-ddl :cards)])
   (println "Client cards table was removed is successful"))
 
 
@@ -34,7 +34,7 @@
 
 
 (defn db-schema-migrated? [table-name]
-  (-> (sql/query (config/db-spec)
+  (-> (sql/query (config/get-db-spec)
                  ["SELECT count (*) 
                    FROM information_schema.tables
                    WHERE table_name = ?" table-name])
@@ -56,26 +56,26 @@
 
 
 (defn get-all-cards []
-  (sql/query (config/db-spec) ["SELECT * FROM cards"]))
+  (sql/query (config/get-db-spec) ["SELECT * FROM cards"]))
 
 (defn get-card [id]
-  (sql/query (config/db-spec) ["SELECT * FROM cards WHERE id = ?" id]))
+  (sql/query (config/get-db-spec) ["SELECT * FROM cards WHERE id = ?" id]))
 
 (defn create-card [data]
   (let [{:keys [full_name, gender, address, birthday, id_policy]} data]
-    (sql/execute! (config/db-spec) ["INSERT INTO 
+    (sql/execute! (config/get-db-spec) ["INSERT INTO 
                             cards (full_name, gender, address, birthday, id_policy) 
                             VALUES (?, ?, ?, ?::date, ?::bigint)"
-                                    full_name gender address birthday id_policy])))
+                                        full_name gender address birthday id_policy])))
 
 (defn update-card [id data]
   (let [{:keys [full_name, gender, address, birthday, id_policy]} data]
-    (sql/execute! (config/db-spec) ["UPDATE public.cards 
+    (sql/execute! (config/get-db-spec) ["UPDATE public.cards 
                             SET full_name = ?, gender = ?, address = ?, birthday = ?::date, id_policy = ?::bigint
                             WHERE id = ?::integer"
-                                    full_name gender address birthday id_policy id])))
+                                        full_name gender address birthday id_policy id])))
 
 (defn delete-card [id]
-  (sql/execute! (config/db-spec) ["DELETE FROM cards WHERE id = ?" id]))
+  (sql/execute! (config/get-db-spec) ["DELETE FROM cards WHERE id = ?" id]))
 
-(defn q [sql] (sql/query (config/db-spec) [sql]))
+(defn q [sql] (sql/query (config/get-db-spec) [sql]))
