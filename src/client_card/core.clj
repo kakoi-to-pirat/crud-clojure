@@ -8,7 +8,8 @@
             [environ.core :as environ]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
             [compojure.route :refer [not-found resources]]
-            [client-card.db  :as db]))
+            [client-card.db  :as db]
+            [client-card.views :as views]))
 
 (defn response-error [error]
   (status (response {:error (.getMessage error)}) 500))
@@ -19,7 +20,9 @@
 
 
 (defn index-handler [request]
-  (try (response "Hello!")
+  (try {:status 200
+        :headers {"Content-Type" "text/html"}
+        :body (views/index)}
        (catch Exception e (response-error e))))
 
 (defn cards-view-handler [request]
@@ -81,10 +84,10 @@
   (DELETE "/card/:id" [id] ((-> card-delete-handler
                                 wrap-json-response) id))
 
-  (not-found (-> not-found-handler
-                 wrap-json-response))
+  (resources "/")
 
-  (resources "/"))
+  (not-found (-> not-found-handler
+                 wrap-json-response)))
 
 
 ;; -------------------------

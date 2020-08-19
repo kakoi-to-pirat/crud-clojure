@@ -17,3 +17,9 @@ pom.xml.asc
 
 /pgdata
 /pgdatatest
+
+node_modules
+package-lock.json
+
+.rebel_readline_history
+figwheel_server.log
