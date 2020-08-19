@@ -8,8 +8,7 @@
             [environ.core :as environ]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
             [compojure.route :refer [not-found resources]]
-            [client-card.db  :as db]
-            [client-card.views :as views]))
+            [client-card.db  :as db]))
 
 (defn response-error [error]
   (status (response {:error (.getMessage error)}) 500))
@@ -20,6 +19,10 @@
 
 
 (defn index-handler [request]
+  (try (response "Hello!")
+       (catch Exception e (response-error e))))
+
+(defn cards-view-handler [request]
   (try (response (db/get-all-cards))
        (catch Exception e (response-error e))))
 
@@ -48,7 +51,8 @@
     (response {:deletes-card-id id})
     (catch Exception e (response-error e))))
 
-(def not-found-handler (views/not-found-view))
+(defn not-found-handler [request]
+  (response {:message "Sorry, the page you requested was not found!"}))
 
 
 ;; -------------------------
@@ -56,8 +60,10 @@
 
 
 (defroutes app
-  (GET "/" [] (-> index-handler
-                  wrap-json-response))
+  (GET "/" [] index-handler)
+
+  (GET "/card/" [] (-> cards-view-handler
+                       wrap-json-response))
 
   (GET "/card/:id" [id] ((-> card-view-handler
                              wrap-json-response) id))
@@ -75,9 +81,10 @@
   (DELETE "/card/:id" [id] ((-> card-delete-handler
                                 wrap-json-response) id))
 
-  (resources "/")
+  (not-found (-> not-found-handler
+                 wrap-json-response))
 
-  (not-found not-found-handler))
+  (resources "/"))
 
 
 ;; -------------------------

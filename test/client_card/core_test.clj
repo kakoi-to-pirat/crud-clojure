@@ -2,9 +2,6 @@
   (:require [clojure.test :refer [deftest testing is use-fixtures]]
             [client-card.core :as core]
             [client-card.db :as db]
-            ;; [clojure.string :as string]
-            ;; [mock-clj.core :as mc]
-            ;; [client-card.config :as config]
             [clojure.data.json :as json]))
 
 (def cards [{:id 1
@@ -20,9 +17,11 @@
              :birthday "1991-08-10"
              :id_policy 99812234700}])
 
-(def errDatabaseException "Error in database!")
-
-(defn get-card [id] (filter #(= (:id %) id) cards))
+(def new-card {:full_name "Nikita Prokopov"
+               :gender "Male"
+               :address "Egorova, 8"
+               :birthday "1985-08-10"
+               :id_policy 112211700})
 
 (defn database-for-tests [all-tests]
   (db/migrate-down)
@@ -30,17 +29,17 @@
   (doseq [c cards] (db/create-card c))
   (all-tests))
 
-(use-fixtures :once database-for-tests)
+(use-fixtures :each database-for-tests)
 
-(deftest index-route
+(deftest cards-all-view
   (testing "Is correctly response"
-    (let [{:keys [status headers body]} (core/app {:uri "/" :request-method :get})
+    (let [{:keys [status headers body]} (core/app {:uri "/card/" :request-method :get})
           cards-from-response (json/read-str body :key-fn keyword)]
       (is (= status 200))
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
       (is (= cards-from-response cards)))))
 
-(deftest card-view-route
+(deftest card-view
   (testing "Is correctly response"
     (let [{:keys [status headers body]} (core/app {:uri (format "/card/%s" (:id (first cards)))
                                                    :request-method :get})
@@ -49,75 +48,65 @@
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
       (is (= cards-from-response [(first cards)])))))
 
-;; (deftest card-view-handler
-;;   (testing "Is correctly response"
-;;     (with-redefs [db/get-card (fn [id] (get-card id))]
-;;       (let [{:keys [status headers body]} (core/card-view-handler 4)]
-;;         (is (= status 200))
-;;         (is (= headers {"Content-Type" "text/html"}))
+(deftest card-update
+  (testing "Card was updated"
+    (let [card-id (:id (first cards))
+          {:keys [status headers]} (core/app {:uri (format "/card/%s" card-id)
+                                              :request-method :put
+                                              :params new-card})
 
-;;         (is (string/includes? body (:full_name (first cards))))
-;;         (is (string/includes? body (:address (first cards))))
-;;         (is (string/includes? body (:birthday (first cards))))
-;;         (is (string/includes? body (str (:id_policy (first cards)))))
+          {:keys [body]} (core/app {:uri (format "/card/%s" card-id)
+                                    :request-method :get})
 
-;;         (is (not (string/includes? body (:full_name (second cards)))))))))
+          cards-from-response (json/read-str body :key-fn keyword)
+          expected-card (first cards-from-response)
+          actual-card (merge {:id 1} new-card)]
 
-;; (deftest card-edit-handler
-;;   (testing "Is correctly response"
-;;     (with-redefs [db/get-card (fn [id] (get-card id))]
-;;       (let [{:keys [status headers body]} (core/card-edit-handler 5)]
-;;         (is (= status 200))
-;;         (is (= headers {"Content-Type" "text/html"}))
+      (is (= status 200))
+      (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
+      (is (= (count cards-from-response) 1))
+      (is (= expected-card actual-card)))))
 
-;;         (is (string/includes? body (:full_name (second cards))))
-;;         (is (string/includes? body (:address (second cards))))
-;;         (is (string/includes? body (:birthday (second cards))))
-;;         (is (string/includes? body (str (:id_policy (second cards)))))
+(deftest card-save
+  (testing "Card was saved"
+    (let [{:keys [status headers]} (core/app {:uri "/card/"
+                                              :request-method :post
+                                              :params new-card})
 
-;;         (is (not (string/includes? body (:full_name (first cards)))))))))
+          {:keys [body]} (core/app {:uri "/card/"
+                                    :request-method :get})
 
-;; (deftest card-update-handler
-;;   (testing "Was called db/update-card with correctly params"
-;;     (mc/with-mock [db/update-card]
-;;       (let [card (first cards)]
-;;         (core/card-update-handler {:params card})
-;;         (is (= (mc/calls db/update-card) [[(:id card) card]])))))
+          cards-from-response (json/read-str body :key-fn keyword)
+          expected-card (last cards-from-response)
+          actual-card (merge {:id 3} new-card)]
 
-;;   (testing "Is rendered Exception"
-;;     (with-redefs [db/update-card (fn [id data] (throw (Exception. (format "%s %s %s" errDatabaseException id data))))]
-;;       (let [card (first cards)
-;;             {:keys [status headers body]} (core/card-update-handler {:params card})]
-;;         (is (= status 500))
-;;         (is (= headers {"Content-Type" "text/html"}))
-;;         (is (string/includes? body (format "%s %s %s" errDatabaseException (:id card) card)))))))
+      (is (= status 200))
+      (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
+      (is (= (count cards-from-response) 3))
+      (is (= expected-card actual-card)))))
 
-;; (deftest card-save-handler
-;;   (testing "Was called db/update-card with correctly params"
-;;     (mc/with-mock [db/create-card]
-;;       (let [card (first cards)]
-;;         (core/card-save-handler {:params card})
-;;         (is (= (mc/calls db/create-card) [[card]])))))
+(deftest card-delete
+  (testing "Card was deleted"
+    (let [card-id (:id (first cards))
+          {:keys [status headers]} (core/app {:uri (format "/card/%s" card-id)
+                                              :request-method :delete})
 
-;;   (testing "Is rendered exception"
-;;     (with-redefs [db/create-card (fn [data] (throw (Exception. (format "%s %s" errDatabaseException data))))]
-;;       (let [card (first cards)
-;;             {:keys [status headers body]} (core/card-save-handler {:params card})]
-;;         (is (= status 500))
-;;         (is (= headers {"Content-Type" "text/html"}))
-;;         (is (string/includes? body (format "%s %s" errDatabaseException card)))))))
+          {:keys [body]} (core/app {:uri "/card/"
+                                    :request-method :get})
 
-;; (deftest card-delete-handler
-;;   (testing "Was called db/update-card with correctly params"
-;;     (mc/with-mock [db/delete-card]
-;;       (let [id (:id (first cards))]
-;;         (core/card-delete-handler id)
-;;         (is (= (mc/calls db/delete-card) [[id]])))))
+          cards-from-response (json/read-str body :key-fn keyword)
+          expected-card (first cards-from-response)
+          actual-card (second cards)]
 
-;;   (testing "Is rendered exception"
-;;     (with-redefs [db/delete-card (fn [id] (throw (Exception. (format "%s %s" errDatabaseException id))))]
-;;       (let [id (:id (first cards))
-;;             {:keys [status headers body]} (core/card-delete-handler id)]
-;;         (is (= status 500))
-;;         (is (= headers {"Content-Type" "text/html"}))
-;;         (is (string/includes? body (format "%s %s" errDatabaseException id)))))))))
+      (is (= status 200))
+      (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
+      (is (= (count cards-from-response) 1))
+      (is (= expected-card actual-card)))))
+
+(deftest not-found-route
+  (testing "Is correctly response"
+    (let [{:keys [status headers body]} (core/app {:uri "/not-found/" :request-method :get})
+          {:keys [message]} (json/read-str body :key-fn keyword)]
+      (is (= status 404))
+      (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
+      (is (= message "Sorry, the page you requested was not found!")))))

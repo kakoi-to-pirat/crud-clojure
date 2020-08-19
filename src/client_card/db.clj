@@ -21,12 +21,10 @@
 
 
 (defn create-cards-table []
-  (sql/db-do-commands (config/get-db-spec) cards-table-ddl)
-  (println "Client cards table was created is successful"))
+  (sql/db-do-commands (config/get-db-spec) cards-table-ddl))
 
 (defn drop-cards-table []
-  (sql/db-do-commands (config/get-db-spec) [(sql/drop-table-ddl :cards)])
-  (println "Client cards table was removed is successful"))
+  (sql/db-do-commands (config/get-db-spec) [(sql/drop-table-ddl :cards)]))
 
 
 ;; -------------------------
