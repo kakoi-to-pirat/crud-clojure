@@ -3,7 +3,7 @@
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
-            [ring.util.response :refer [response status]]
+            [ring.util.response :refer [response status redirect]]
             [dotenv :refer [env]]
             [environ.core :as environ]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
@@ -19,13 +19,13 @@
 ;; HANDLERS
 
 
-(defn index-handler [request]
+(defn index-handler [_request]
   (try {:status 200
         :headers {"Content-Type" "text/html"}
         :body (views/index)}
        (catch Exception e (response-error e))))
 
-(defn cards-view-handler [request]
+(defn cards-view-handler [_request]
   (try (response (db/get-all-cards))
        (catch Exception e (response-error e))))
 
@@ -54,7 +54,7 @@
     (response {:deletes-card-id id})
     (catch Exception e (response-error e))))
 
-(defn not-found-handler [request]
+(defn not-found-handler [_request]
   (response {:message "Sorry, the page you requested was not found!"}))
 
 
@@ -65,24 +65,24 @@
 (defroutes app
   (GET "/" [] index-handler)
 
-  (GET "/card/" [] (-> cards-view-handler
-                       wrap-json-response))
+  (GET "/api/card/" [] (-> cards-view-handler
+                           wrap-json-response))
 
-  (GET "/card/:id" [id] ((-> card-view-handler
-                             wrap-json-response) id))
+  (GET "/api/card/:id" [id] ((-> card-view-handler
+                                 wrap-json-response) id))
 
-  (POST "/card/" [] (-> card-save-handler
-                        wrap-keyword-params
-                        wrap-json-params
-                        wrap-json-response))
+  (POST "/api/card/" [] (-> card-save-handler
+                            wrap-keyword-params
+                            wrap-json-params
+                            wrap-json-response))
 
-  (PUT "/card/:id" [] (-> card-update-handler
-                          wrap-keyword-params
-                          wrap-json-params
-                          wrap-json-response))
+  (PUT "/api/card/:id" [] (-> card-update-handler
+                              wrap-keyword-params
+                              wrap-json-params
+                              wrap-json-response))
 
-  (DELETE "/card/:id" [id] ((-> card-delete-handler
-                                wrap-json-response) id))
+  (DELETE "/api/card/:id" [id] ((-> card-delete-handler
+                                    wrap-json-response) id))
 
   (resources "/")
 

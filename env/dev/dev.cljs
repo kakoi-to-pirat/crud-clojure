@@ -12,4 +12,4 @@
 
 (enable-console-print!)
 
-(core/mount-root)
+(core/init!)

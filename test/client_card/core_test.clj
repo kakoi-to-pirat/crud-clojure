@@ -2,65 +2,47 @@
   (:require [clojure.test :refer [deftest testing is use-fixtures]]
             [client-card.core :as core]
             [client-card.db :as db]
-            [clojure.data.json :as json]))
-
-(def cards [{:id 1
-             :full_name "Petr Alekseev"
-             :gender "Male"
-             :address "Egorova, 17"
-             :birthday "1989-08-10"
-             :id_policy 12002334421}
-            {:id 2
-             :full_name "Irina Savchenko"
-             :gender "Female"
-             :address "Egorova, 25"
-             :birthday "1991-08-10"
-             :id_policy 99812234700}])
-
-(def new-card {:full_name "Nikita Prokopov"
-               :gender "Male"
-               :address "Egorova, 8"
-               :birthday "1985-08-10"
-               :id_policy 112211700})
+            [clojure.data.json :as json]
+            [client-card.fixtures :as fixtures]))
 
 (defn database-for-tests [all-tests]
   (db/migrate-down)
   (db/migrate-up)
-  (doseq [c cards] (db/create-card c))
+  (doseq [c fixtures/cards] (db/create-card c))
   (all-tests))
 
 (use-fixtures :each database-for-tests)
 
 (deftest cards-all-view
   (testing "Is correctly response"
-    (let [{:keys [status headers body]} (core/app {:uri "/card/" :request-method :get})
+    (let [{:keys [status headers body]} (core/app {:uri "/api/card/" :request-method :get})
           cards-from-response (json/read-str body :key-fn keyword)]
       (is (= status 200))
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
-      (is (= cards-from-response cards)))))
+      (is (= cards-from-response fixtures/cards)))))
 
 (deftest card-view
   (testing "Is correctly response"
-    (let [{:keys [status headers body]} (core/app {:uri (format "/card/%s" (:id (first cards)))
+    (let [{:keys [status headers body]} (core/app {:uri (format "/api/card/%s" (:id (first fixtures/cards)))
                                                    :request-method :get})
           cards-from-response (json/read-str body :key-fn keyword)]
       (is (= status 200))
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
-      (is (= cards-from-response [(first cards)])))))
+      (is (= cards-from-response [(first fixtures/cards)])))))
 
 (deftest card-update
   (testing "Card was updated"
-    (let [card-id (:id (first cards))
-          {:keys [status headers]} (core/app {:uri (format "/card/%s" card-id)
+    (let [card-id (:id (first fixtures/cards))
+          {:keys [status headers]} (core/app {:uri (format "/api/card/%s" card-id)
                                               :request-method :put
-                                              :params new-card})
+                                              :params fixtures/new-card})
 
-          {:keys [body]} (core/app {:uri (format "/card/%s" card-id)
+          {:keys [body]} (core/app {:uri (format "/api/card/%s" card-id)
                                     :request-method :get})
 
           cards-from-response (json/read-str body :key-fn keyword)
           expected-card (first cards-from-response)
-          actual-card (merge {:id 1} new-card)]
+          actual-card (merge {:id 1} fixtures/new-card)]
 
       (is (= status 200))
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
@@ -69,16 +51,16 @@
 
 (deftest card-save
   (testing "Card was saved"
-    (let [{:keys [status headers]} (core/app {:uri "/card/"
+    (let [{:keys [status headers]} (core/app {:uri "/api/card/"
                                               :request-method :post
-                                              :params new-card})
+                                              :params fixtures/new-card})
 
-          {:keys [body]} (core/app {:uri "/card/"
+          {:keys [body]} (core/app {:uri "/api/card/"
                                     :request-method :get})
 
           cards-from-response (json/read-str body :key-fn keyword)
           expected-card (last cards-from-response)
-          actual-card (merge {:id 3} new-card)]
+          actual-card (merge {:id 3} fixtures/new-card)]
 
       (is (= status 200))
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
@@ -87,16 +69,16 @@
 
 (deftest card-delete
   (testing "Card was deleted"
-    (let [card-id (:id (first cards))
-          {:keys [status headers]} (core/app {:uri (format "/card/%s" card-id)
+    (let [card-id (:id (first fixtures/cards))
+          {:keys [status headers]} (core/app {:uri (format "/api/card/%s" card-id)
                                               :request-method :delete})
 
-          {:keys [body]} (core/app {:uri "/card/"
+          {:keys [body]} (core/app {:uri "/api/card/"
                                     :request-method :get})
 
           cards-from-response (json/read-str body :key-fn keyword)
           expected-card (first cards-from-response)
-          actual-card (second cards)]
+          actual-card (second fixtures/cards)]
 
       (is (= status 200))
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
