@@ -17,10 +17,9 @@
   (html5
    (head)
    [:body
-    [:div#app
-     [:h2 "Welcome to app!"]
-     [:p "please wait while Figwheel is waking up ..."]
-     [:p "(Check the js console for hints if nothing exciting happens.)"]]
+    [:main#app {:class "app"}
+     [:h1 "Welcome to clients card!"]
+     [:p "Please wait while app is waking up ..."]]
     (include-js "/js/app.js")]))
 
 ;; (defn cards-list [cards]

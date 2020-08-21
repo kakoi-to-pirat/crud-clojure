@@ -84,11 +84,3 @@
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
       (is (= (count cards-from-response) 1))
       (is (= expected-card actual-card)))))
-
-(deftest not-found-route
-  (testing "Is correctly response"
-    (let [{:keys [status headers body]} (core/app {:uri "/not-found/" :request-method :get})
-          {:keys [message]} (json/read-str body :key-fn keyword)]
-      (is (= status 404))
-      (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
-      (is (= message "Sorry, the page you requested was not found!")))))

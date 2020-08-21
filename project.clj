@@ -66,7 +66,9 @@
   :main client-card.server.core
   :min-lein-version "2.5.0"
 
-  :profiles {:dev {:dependencies [[binaryage/devtools "1.0.2"]]
+  :profiles {:dev {:dependencies [[binaryage/devtools "1.0.2"]
+                                  [figwheel-sidecar "0.5.16"]
+                                  [nrepl "0.7.0"]]
 
                    :source-paths ["env/dev"]
 

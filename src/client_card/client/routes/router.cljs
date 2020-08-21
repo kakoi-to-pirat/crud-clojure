@@ -15,7 +15,9 @@
 (defn get-page-for [route]
   (case route
     :index #'page/home-page
-    :about #'page/about-page))
+    :about #'page/about-page
+    :card-edit #'page/card-edit-page
+    :card-add #'page/card-add-page))
 
 
 ;; -------------------------
@@ -23,9 +25,7 @@
 
 
 (defn get-current-page []
-  (fn []
-    (let [page (:current-page (session/get :route))]
-      [:main page/navigation [page]])))
+  (let [page (:current-page (session/get :route))] [page/template [page]]))
 
 
 ;; -------------------------

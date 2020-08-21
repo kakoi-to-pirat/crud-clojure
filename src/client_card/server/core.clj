@@ -54,9 +54,6 @@
     (response {:deletes-card-id id})
     (catch Exception e (response-error e))))
 
-(defn not-found-handler [_request]
-  (response {:message "Sorry, the page you requested was not found!"}))
-
 
 ;; -------------------------
 ;; ROUTES
@@ -86,8 +83,7 @@
 
   (resources "/")
 
-  (not-found (-> not-found-handler
-                 wrap-json-response)))
+  (not-found index-handler))
 
 
 ;; -------------------------

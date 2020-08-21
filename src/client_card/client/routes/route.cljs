@@ -4,7 +4,10 @@
 (def routes
   (reitit/router
    [["/" :index]
-    ["/about" :about]]))
+    ["/about" :about]
+    ["/card"
+     ["/" :card-add]
+     ["/:id" :card-edit]]]))
 
 (defn path-for [route & [params]]
   (if params
