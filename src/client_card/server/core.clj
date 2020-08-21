@@ -1,15 +1,15 @@
-(ns client-card.core
+(ns client-card.server.core
   (:require [ring.adapter.jetty :as webserver]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
-            [ring.util.response :refer [response status redirect]]
+            [ring.util.response :refer [response status]]
             [dotenv :refer [env]]
             [environ.core :as environ]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
             [compojure.route :refer [not-found resources]]
-            [client-card.db  :as db]
-            [client-card.views :as views]))
+            [client-card.server.db  :as db]
+            [client-card.server.view :as view]))
 
 (defn response-error [error]
   (status (response {:error (.getMessage error)}) 500))
@@ -22,7 +22,7 @@
 (defn index-handler [_request]
   (try {:status 200
         :headers {"Content-Type" "text/html"}
-        :body (views/index)}
+        :body (view/index)}
        (catch Exception e (response-error e))))
 
 (defn cards-view-handler [_request]

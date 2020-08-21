@@ -1,4 +1,4 @@
-(ns client-card.views
+(ns client-card.server.view
   (:require [hiccup.page :refer [include-js include-css html5]]
             [environ.core :as environ]))
 

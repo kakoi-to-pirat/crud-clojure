@@ -1,6 +1,6 @@
-(ns client-card.db
+(ns client-card.server.db
   (:require [clojure.java.jdbc :as sql]
-            [client-card.config :as config]))
+            [client-card.server.config :as config]))
 
 
 ;; -------------------------

@@ -4,8 +4,8 @@
             [reagent.core :as reagent]
             [clerk.core :as clerk]
             [accountant.core :as accountant]
-            [client.pages :as pages]
-            [client.routes :as routes]))
+            [client.page :as page]
+            [client.route :as routes]))
 
 
 ;; -------------------------
@@ -14,8 +14,8 @@
 
 (defn get-page-for [route]
   (case route
-    :index #'pages/home-page
-    :about #'pages/about-page))
+    :index #'page/home-page
+    :about #'page/about-page))
 
 
 ;; -------------------------
@@ -25,7 +25,7 @@
 (defn get-current-page []
   (fn []
     (let [page (:current-page (session/get :route))]
-      [:main pages/navigation [page]])))
+      [:main page/navigation [page]])))
 
 
 ;; -------------------------

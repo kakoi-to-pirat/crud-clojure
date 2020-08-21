@@ -1,8 +1,9 @@
-(defproject client-card "0.1.0-SNAPSHOT"
+(defproject medical-cards "0.1.0-SNAPSHOT"
   :description "Demo CRUD app"
   :url "https://github.com/kakoi-to-pirat/crud-clojure"
 
-  :dependencies [[compojure "1.6.1"]
+  :dependencies [[cljs-ajax "0.8.0"]
+                 [compojure "1.6.1"]
                  [environ "1.2.0"]
                  [hiccup "1.0.5"]
                  [lein-cljfmt "0.6.8"]
@@ -29,13 +30,13 @@
   :resource-paths ["resources" "target/cljsbuild"]
 
   :clean-targets ^{:protect false} [:target-path
-                                    [:cljsbuild :builds :app :compiler :output-dir]
-                                    [:cljsbuild :builds :app :compiler :output-to]]
+                                    [:cljsbuild :builds :dev :compiler :output-dir]
+                                    [:cljsbuild :builds :dev :compiler :output-to]]
 
   :minify-assets [[:css {:source "resources/public/app.css"
                          :target "resources/public/app.min.css"}]]
 
-  :cljsbuild {:builds {:app {:figwheel {:on-jsload "client.core/mount-root"
+  :cljsbuild {:builds {:dev {:figwheel {:on-jsload "client.core/mount-root"
                                         :open-urls ["http://localhost:3449/"]}
 
                              :source-paths ["src/client_card/client" "env/dev"]
@@ -48,21 +49,21 @@
                                         :optimizations :none
                                         :pretty-print  true}}
 
-                       :min {:source-paths ["src/client_card/client" "env/prod"]
+                       :prod {:source-paths ["src/client_card/client" "env/prod"]
 
-                             :compiler {:output-to  "target/cljsbuild/public/js/app.js"
-                                        :output-dir "target/cljsbuild/public/js"
-                                        :source-map "target/cljsbuild/public/js/app.js.map"
-                                        :optimizations :advanced
-                                        :infer-externs true
-                                        :pretty-print  false}}}}
+                              :compiler {:output-to  "target/cljsbuild/public/js/app.js"
+                                         :output-dir "target/cljsbuild/public/js"
+                                         :source-map "target/cljsbuild/public/js/app.js.map"
+                                         :optimizations :advanced
+                                         :infer-externs true
+                                         :pretty-print  false}}}}
 
   :figwheel {:css-dirs ["resources/public"]
-             :ring-handler client-card.core/app}
+             :ring-handler client-card.server.core/app}
 
-  :repl-options {:init-ns client-card.core}
+  :repl-options {:init-ns client-card.server.core}
   :uberjar-name "client-card.jar"
-  :main client-card.core
+  :main client-card.server.core
   :min-lein-version "2.5.0"
 
   :profiles {:dev {:dependencies [[binaryage/devtools "1.0.2"]]
@@ -82,7 +83,7 @@
              :test {:env {:environment "test"}}
 
              :uberjar {:hooks [minify-assets.plugin/hooks]
-                       :source-paths ["env/prod"]
-                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+                       :source-paths ["src/client-card/client" "env/prod"]
+                       :prep-tasks ["compile" ["cljsbuild" "once" "prod"]]
                        :aot :all
                        :omit-source true}})

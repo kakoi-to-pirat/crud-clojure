@@ -1,4 +1,4 @@
-(ns client.routes
+(ns client.route
   (:require [reitit.frontend :as reitit]))
 
 (def routes

@@ -37,7 +37,7 @@ Open [http://localhost:8080](http://localhost:8080)
 
 ## Run compiled application
 
-```java -cp target/client-card.jar clojure.main -m client-card.core```
+```java -cp target/client-card.jar clojure.main -m client-card.server.core```
 
 ## Add githooks
 

@@ -1,7 +1,7 @@
-(ns client-card.core-test
+(ns client-card.server.core-test
   (:require [clojure.test :refer [deftest testing is use-fixtures]]
-            [client-card.core :as core]
-            [client-card.db :as db]
+            [client-card.server.core :as core]
+            [client-card.server.db :as db]
             [clojure.data.json :as json]
             [client-card.fixtures :as fixtures]))
 

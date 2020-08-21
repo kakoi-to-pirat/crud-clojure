@@ -1,16 +1,18 @@
-(ns client.pages
-  (:require [client.routes :as routes]))
+(ns client.page
+  (:require [client.route :as route]
+            [client.component :as component]))
 
 (def navigation [:nav
-                 [:a {:href (routes/path-for :index)} "Home"] " | "
-                 [:a {:href (routes/path-for :about)} "About"]])
+                 [:a {:href (route/path-for :index)} "Home"] " | "
+                 [:a {:href (route/path-for :about)} "About"]])
 
 (defn home-page []
   (fn []
     [:div
      [:h1 "Welcome to demo app"]
      [:ul
-      [:li [:a {:href (routes/path-for :about)} "About"]]]]))
+      [:li [:a {:href (route/path-for :about)} "About"]]]
+     [component/root]]))
 
 (defn about-page []
   (fn [] [:div
