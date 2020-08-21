@@ -83,7 +83,7 @@
              :test {:env {:environment "test"}}
 
              :uberjar {:hooks [minify-assets.plugin/hooks]
-                       :source-paths ["src/client-card/client" "env/prod"]
+                       :source-paths ["src/client_card/client" "env/prod"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "prod"]]
                        :aot :all
                        :omit-source true}})
