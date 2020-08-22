@@ -1,4 +1,4 @@
-(defproject medical-cards "0.1.0-SNAPSHOT"
+(defproject client-card "0.1.0-SNAPSHOT"
   :description "Demo CRUD app"
   :url "https://github.com/kakoi-to-pirat/crud-clojure"
 
@@ -62,6 +62,7 @@
              :ring-handler client-card.server.core/app}
 
   :min-lein-version "2.5.0"
+  :main client-card.server.core
 
   :profiles {:dev {:main client-card.server.dev/-main-dev
                    :repl-options {:init-ns client-card.server.dev}
@@ -81,14 +82,9 @@
 
                    :env {:environment "development"}}
 
-             :prod {:dependencies [[nrepl "0.7.0"]]
-                    :main client-card.server.prod
-                    :source-paths ["src" "env/prod"]}
-
              :test {:env {:environment "test"}}
 
-             :uberjar {:main client-card.server.prod
-                       :source-paths ["src" "env/prod"]
+             :uberjar {:source-paths ["src" "env/prod"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "prod"]]
                        :uberjar-name "client-card.jar"
                        :aot :all

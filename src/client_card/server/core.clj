@@ -1,12 +1,13 @@
 (ns client-card.server.core
-  (:require [ring.adapter.jetty :as webserver]
-            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
-            [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
-            [ring.util.response :refer [response status]]
+  (:require [client-card.server.db  :as db]
+            [client-card.server.view :as view]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
             [compojure.route :refer [not-found resources]]
-            [client-card.server.db  :as db]
-            [client-card.server.view :as view]))
+            [dotenv :refer [env]]
+            [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
+            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [ring.util.response :refer [response status]]
+            [ring.adapter.jetty :as webserver]))
 
 (defn response-error [error]
   (status (response {:error (.getMessage error)}) 500))
@@ -81,3 +82,16 @@
   (resources "/")
 
   (not-found index-handler))
+
+
+;; -------------------------
+;; SERVER
+
+
+(defn start-server [& [port]]
+  (let [port (Integer. (or port (env "PORT") 3000))]
+    (webserver/run-jetty app {:port port})))
+
+(defn -main [& args]
+  (db/migrate-up)
+  (start-server args))
