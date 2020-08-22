@@ -39,7 +39,8 @@
   :cljsbuild {:builds {:dev {:figwheel {:on-jsload "client.core/mount-root"
                                         :open-urls ["http://localhost:3449/"]}
 
-                             :source-paths ["src/client_card/client" "env/dev"]
+                             :source-paths ["src/client_card/client"
+                                            "env/dev/client_card/client"]
 
                              :compiler {:main "client.dev"
                                         :asset-path "/js/out"
@@ -49,7 +50,8 @@
                                         :optimizations :none
                                         :pretty-print  true}}
 
-                       :prod {:source-paths ["src/client_card/client" "env/prod"]
+                       :prod {:source-paths ["src/client_card/client"
+                                             "env/prod/client_card/client"]
 
                               :compiler {:output-to  "target/cljsbuild/public/js/app.js"
                                          :output-dir "target/cljsbuild/public/js"
@@ -61,16 +63,15 @@
   :figwheel {:css-dirs ["resources/public"]
              :ring-handler client-card.server.core/app}
 
-  :repl-options {:init-ns client-card.server.core}
-  :uberjar-name "client-card.jar"
-  :main client-card.server.core
   :min-lein-version "2.5.0"
 
-  :profiles {:dev {:dependencies [[binaryage/devtools "1.0.2"]
+  :profiles {:dev {:main client-card.server.dev/-main-dev
+                   :repl-options {:init-ns client-card.server.dev}
+                   :dependencies [[binaryage/devtools "1.0.2"]
                                   [figwheel-sidecar "0.5.16"]
                                   [nrepl "0.7.0"]]
 
-                   :source-paths ["env/dev"]
+                   :source-paths ["src" "env/dev"]
 
                    :plugins [[lein-githooks "0.1.0"]
                              [lein-cljfmt "0.6.8"]
@@ -82,10 +83,16 @@
 
                    :env {:environment "development"}}
 
+             :prod {:dependencies [[nrepl "0.7.0"]]
+                    :main client-card.server.prod
+                    :source-paths ["src" "env/prod"]}
+
              :test {:env {:environment "test"}}
 
-             :uberjar {:hooks [minify-assets.plugin/hooks]
-                       :source-paths ["src/client_card/client" "env/prod"]
+             :uberjar {:main client-card.server.prod
+                       :source-paths ["src" "env/prod"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "prod"]]
+                       :uberjar-name "client-card.jar"
                        :aot :all
-                       :omit-source true}})
+                       :omit-source true
+                       :hooks [minify-assets.plugin/hooks]}})

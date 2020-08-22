@@ -1,11 +1,8 @@
 (ns client-card.server.core
   (:require [ring.adapter.jetty :as webserver]
-            [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
             [ring.util.response :refer [response status]]
-            [dotenv :refer [env]]
-            [environ.core :as environ]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
             [compojure.route :refer [not-found resources]]
             [client-card.server.db  :as db]
@@ -84,34 +81,3 @@
   (resources "/")
 
   (not-found index-handler))
-
-
-;; -------------------------
-;; SERVER
-
-
-(defonce server (atom nil))
-
-(defn start-server [& [port]]
-  (let [port (Integer. (or (:port port) (env "APP_PORT") 3000))]
-    (if (= (environ/env :environment) "development")
-      (reset! server (webserver/run-jetty (wrap-reload #'app)
-                                          {:port port :join? false}))
-      (webserver/run-jetty app {:port port}))))
-
-(defn stop-server []
-  (.stop @server)
-  (reset! server nil))
-
-(defn -main []
-  (db/migrate-up)
-  (start-server))
-
-
-;; -------------------------
-;; REPL
-
-
-(comment
-  (start-server)
-  (stop-server))
