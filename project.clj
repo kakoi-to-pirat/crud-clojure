@@ -84,8 +84,7 @@
 
              :test {:env {:environment "test"}}
 
-             :uberjar {:source-paths ["src" "env/prod"]
-                       :prep-tasks ["compile" ["cljsbuild" "once" "prod"]]
+             :uberjar {:prep-tasks ["compile" ["cljsbuild" "once" "prod"]]
                        :uberjar-name "client-card.jar"
                        :aot :all
                        :omit-source true
