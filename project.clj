@@ -6,8 +6,6 @@
                  [compojure "1.6.1"]
                  [environ "1.2.0"]
                  [hiccup "1.0.5"]
-                 [lein-cljfmt "0.6.8"]
-                 [lein-githooks "0.1.0"]
                  [lynxeyes/dotenv "1.0.2"]
                  [metosin/reitit "0.5.1"]
                  [org.clojure/clojure "1.10.1"]
