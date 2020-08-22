@@ -1,7 +1,8 @@
 (ns client.cards-list
   (:require [reagent.core :as reagent]
             [client.route :as route]
-            [client.store :as store]))
+            [re-frame.core :as rf]
+            [client.store :refer []]))
 
 (defn cards-list-template []
   [:table {:key 2003 :class "cards-list" :width "100%"}
@@ -34,17 +35,17 @@
                             [:button {:class "cards-list__item-button app__button"
                                       :type "submit"}
                              "Delete"]]]]))
-     @store/cards)]])
+     @(rf/subscribe [:cards]))]])
 
 (defn cards-list []
   (reagent/create-class
    {:display-name  "cards-list"
 
     :component-did-mount
-    (fn [] (store/load-cards))
+    #(rf/dispatch [:load-cards])
 
     :component-did-update
-    (fn [] ())
+    #(rf/dispatch [:load-cards])
 
     :reagent-render
     (fn [] (cards-list-template))}))
