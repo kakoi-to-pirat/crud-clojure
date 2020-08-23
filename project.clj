@@ -67,7 +67,7 @@
                        :test {:source-paths ["src/client_card/client" "test/client_card/client"]
                               :compiler {:main client.runner-test
                                          :output-to "target/cljsbuild/public/js/test.js"
-                                         :output-dir "target/cljsbuild/public/js/out"
+                                         :output-dir "target/cljsbuild/public/js/out-test"
                                          :optimizations :none}}}}
 
   :figwheel {:css-dirs ["resources/public"]
