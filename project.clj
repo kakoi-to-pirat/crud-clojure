@@ -24,7 +24,10 @@
 
   :plugins [[lein-environ "1.2.0"]
             [lein-cljsbuild "1.1.7"]
-            [lein-asset-minifier "0.4.6" :exclusions [org.clojure/clojure]]]
+            [lein-asset-minifier "0.4.6" :exclusions [org.clojure/clojure]]
+            [lein-doo "0.1.10"]]
+
+  :aliases {"test-cljs" [["doo" "phantom" "test" "once"]]}
 
   :resource-paths ["resources" "target/cljsbuild"]
 
@@ -59,7 +62,13 @@
                                          :source-map "target/cljsbuild/public/js/app.js.map"
                                          :optimizations :advanced
                                          :infer-externs true
-                                         :pretty-print  false}}}}
+                                         :pretty-print  false}}
+
+                       :test {:source-paths ["src/client_card/client" "test/client_card/client"]
+                              :compiler {:main client.runner-test
+                                         :output-to "target/cljsbuild/public/js/test.js"
+                                         :output-dir "target/cljsbuild/public/js/out"
+                                         :optimizations :none}}}}
 
   :figwheel {:css-dirs ["resources/public"]
              :ring-handler client-card.server.core/app}
