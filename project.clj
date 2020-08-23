@@ -24,10 +24,9 @@
 
   :plugins [[lein-environ "1.2.0"]
             [lein-cljsbuild "1.1.7"]
-            [lein-asset-minifier "0.4.6" :exclusions [org.clojure/clojure]]
-            [lein-doo "0.1.10"]]
+            [lein-asset-minifier "0.4.6" :exclusions [org.clojure/clojure]]]
 
-  :aliases {"test-cljs" [["doo" "phantom" "test" "once"]]}
+  :aliases {"test-cljs" [["doo" "chrome-headless" "test" "once"]]}
 
   :resource-paths ["resources" "target/cljsbuild"]
 
@@ -65,10 +64,15 @@
                                          :pretty-print  false}}
 
                        :test {:source-paths ["src/client_card/client" "test/client_card/client"]
-                              :compiler {:main client.runner-test
-                                         :output-to "target/cljsbuild/public/js/test.js"
-                                         :output-dir "target/cljsbuild/public/js/out-test"
-                                         :optimizations :none}}}}
+                              :compiler {:main client.doo-runner
+                                         :asset-path "/js/out"
+                                         :output-to "target/test.js"
+                                         :output-dir "target/cljstest/public/js/out"
+                                         :optimizations :none
+                                         :pretty-print true}}}}
+
+  :doo {:build "test"
+        :alias {:default [:chrome]}}
 
   :figwheel {:css-dirs ["resources/public"]
              :ring-handler client-card.server.core/app}
@@ -90,11 +94,12 @@
 
                    :plugins [[lein-githooks "0.1.0"]
                              [lein-cljfmt "0.6.8"]
-                             [lein-figwheel "0.5.20"]]
+                             [lein-figwheel "0.5.20"]
+                             [lein-doo "0.1.10"]]
 
                    :githooks {:auto-install false
                               :pre-push ["lein uberjar"]
-                              :pre-commit ["lein check" "lein cljfmt check" "lein test" "lein doo phantom test once"]}
+                              :pre-commit ["lein check" "lein cljfmt check" "lein test"]}
 
                    :env {:environment "development"}}
 

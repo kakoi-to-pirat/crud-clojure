@@ -1,8 +1,7 @@
 (ns client.core-test
   (:require [cljs.test :refer-macros [is are deftest testing use-fixtures]]
-            ;; [reagent.core :as reagent :refer [atom]]
-            ;; [reagent.dom :as rdom]
-            ))
+            [reagent.core :as reagent :refer [atom]]
+            [reagent.dom :as rdom]))
 
 (deftest test-component
   (testing "div is ok"

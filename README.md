@@ -48,3 +48,14 @@ Open [http://localhost:8080](http://localhost:8080)
 ```core.db => (migrate-up)```
 
 ```core.db => (migrate-down)```
+
+## Running the frontend tests
+To run [cljs.test](https://github.com/clojure/clojurescript/blob/master/src/main/cljs/cljs/test.cljs) tests using headless chrome install karma and its plugins:
+
+```
+npm install -g karma
+npm install -g karma-cli
+npm install karma karma-cljs-test karma-chrome-launcher --save-dev
+
+lein doo chrome-headless test once
+```

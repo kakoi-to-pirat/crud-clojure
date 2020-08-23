@@ -1,4 +1,4 @@
-(ns client.runner-test
+(ns client.doo-runner
   (:require [doo.runner :refer-macros [doo-tests]]
             [client.core-test]))
 
