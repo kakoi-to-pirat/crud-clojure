@@ -4,6 +4,7 @@
 
   :dependencies [[cljs-ajax "0.8.0"]
                  [compojure "1.6.1"]
+                 [day8.re-frame/http-fx "0.2.1"]
                  [environ "1.2.0"]
                  [hiccup "1.0.5"]
                  [lynxeyes/dotenv "1.0.2"]

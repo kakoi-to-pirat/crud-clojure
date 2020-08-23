@@ -1,49 +1,36 @@
 (ns client.store
   (:require [ajax.core :as ajax]
-            [reagent.core :as reagent]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [day8.re-frame.http-fx]))
 
-
-;; -------------------------
-;; STATE
-
-
-(defonce cards (reagent/atom nil))
-
-(defonce loading? (reagent/atom false))
-
-
-;; -------------------------
-;; API
-
-
-(defn load-cards [] (ajax/GET "/api/card/"
-                      {:response-format :json
-                       :keywords? true
-                       :handler (fn [res] (reset! cards res))}))
-
-
-;; -------------------------
-;; EVENTS
-
+(rf/reg-event-fx
+ :load-cards
+ (fn [{:keys [db]} _]
+   {:db   (assoc db :show-twirly true)
+    :http-xhrio {:method          :get
+                 :uri             "/api/card/"
+                 :response-format (ajax/json-response-format {:keywords? true})
+                 :on-success      [:on-success-load-cards]
+                 :on-failure      [:on-failure-load-cards]}}))
 
 (rf/reg-event-db
- :load-cards
- (fn [db _]
-   (load-cards)
-   (assoc-in db [:cards] @cards)))
+ :on-success-load-cards
+ (fn [db [_ res]]
+   (-> db
+       (assoc :loading?  false)
+       (assoc :cards res))))
+
+(rf/reg-event-db
+ :on-failure-load-cards
+ (fn [db [_ _res]]
+   (assoc db :loading?  false)))
 
 (rf/reg-sub
  :cards
  (fn [db _]
    (get-in db [:cards] [])))
 
-(rf/reg-event-db
- :set-loading
- (fn [db [_ value]]
-   (assoc-in db [:loading?] value)))
-
 (rf/reg-sub
  :loading?
  (fn [db _]
-   (get-in db [:loading?] false)))
+   (get-in db [:loading?] true)))
