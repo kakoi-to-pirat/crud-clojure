@@ -47,7 +47,9 @@
                                         :output-dir "target/cljsbuild/public/js/out"
                                         :source-map true
                                         :optimizations :none
-                                        :pretty-print  true}}
+                                        :pretty-print  true
+                                        :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
+                                        :preloads [day8.re-frame-10x.preload]}}
 
                        :prod {:source-paths ["src/client_card/client"
                                              "env/prod/client_card/client"]
@@ -67,9 +69,11 @@
 
   :profiles {:dev {:main client-card.server.dev/-main-dev
                    :repl-options {:init-ns client-card.server.dev}
+
                    :dependencies [[binaryage/devtools "1.0.2"]
                                   [figwheel-sidecar "0.5.16"]
-                                  [nrepl "0.7.0"]]
+                                  [nrepl "0.7.0"]
+                                  [day8.re-frame/re-frame-10x "0.7.0"]]
 
                    :source-paths ["src" "env/dev"]
 

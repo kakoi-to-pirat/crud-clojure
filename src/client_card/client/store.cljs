@@ -5,9 +5,8 @@
 
 (rf/reg-event-fx
  :load-cards
- (fn [{:keys [db]} _]
-   {:db   (assoc db :show-twirly true)
-    :http-xhrio {:method          :get
+ (fn [{:keys [_db]} _]
+   {:http-xhrio {:method          :get
                  :uri             "/api/card/"
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success      [:on-success-load-cards]
