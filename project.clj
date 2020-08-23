@@ -68,12 +68,14 @@
   :main client-card.server.core
 
   :profiles {:dev {:main client-card.server.dev/-main-dev
-                   :repl-options {:init-ns client-card.server.dev}
+                   :repl-options {:init-ns client-card.server.dev
+                                  :nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
 
                    :dependencies [[binaryage/devtools "1.0.2"]
                                   [figwheel-sidecar "0.5.16"]
                                   [nrepl "0.7.0"]
-                                  [day8.re-frame/re-frame-10x "0.7.0"]]
+                                  [day8.re-frame/re-frame-10x "0.7.0"]
+                                  [cider/piggieback "0.5.0"]]
 
                    :source-paths ["src" "env/dev"]
 
