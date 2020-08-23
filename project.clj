@@ -99,7 +99,7 @@
 
                    :githooks {:auto-install false
                               :pre-push ["lein uberjar"]
-                              :pre-commit ["lein check" "lein cljfmt check" "lein test"]}
+                              :pre-commit ["lein cljfmt check" "lein test" "lein doo chrome test once"]}
 
                    :env {:environment "development"}}
 
