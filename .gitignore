@@ -8,17 +8,20 @@ pom.xml.asc
 *.class
 /.lein-*
 /.nrepl-port
-/.prepl-port
+/out
+/.repl
+*.log
+/.env
+/.sass-cache
+/node_modules
+
 .hgignore
 .hg/
 .calva
 
-.env
-
 /pgdata
 /pgdatatest
 
-node_modules
 package-lock.json
 
 .rebel_readline_history

@@ -7,4 +7,4 @@ RUN lein uberjar
 
 EXPOSE 3000
 
-CMD java -cp target/client-card.jar clojure.main -m server.core
+CMD java -cp target/medical-card.jar clojure.main -m medical-card.core

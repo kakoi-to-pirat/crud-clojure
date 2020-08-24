@@ -1,1 +1,1 @@
-web: java $JVM_OPTS -cp target/client-card.jar clojure.main -m server.core $PORT
+web: java $JVM_OPTS -cp target/medical-card.jar clojure.main -m medical-card.core
