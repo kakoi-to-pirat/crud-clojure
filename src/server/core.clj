@@ -1,6 +1,6 @@
-(ns client-card.server.core
-  (:require [client-card.server.db  :as db]
-            [client-card.server.view :as view]
+(ns server.core
+  (:require [server.db  :as db]
+            [server.view :as view]
             [compojure.core :refer [defroutes GET POST PUT DELETE]]
             [compojure.route :refer [not-found resources]]
             [dotenv :refer [env]]

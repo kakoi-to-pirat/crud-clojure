@@ -1,9 +1,9 @@
-(ns client-card.server.dev
+(ns server.dev
   (:require [ring.adapter.jetty :as webserver]
             [ring.middleware.reload :refer [wrap-reload]]
             [dotenv :refer [env]]
-            [client-card.server.core :as core]
-            [client-card.server.db :as db]
+            [server.core :as core]
+            [server.db :as db]
             [figwheel-sidecar.repl-api :as ra]))
 
 

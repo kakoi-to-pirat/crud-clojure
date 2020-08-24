@@ -1,4 +1,4 @@
-(ns client-card.fixtures)
+(ns server.fixtures)
 
 (def cards [{:id 1
              :full_name "Petr Alekseev"

@@ -1,4 +1,4 @@
-(ns client-card.server.config
+(ns server.config
   (:require [environ.core :as environ]
             [clojure.string :as string]
             [dotenv :refer [env]]))

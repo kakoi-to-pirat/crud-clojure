@@ -1,4 +1,4 @@
-(defproject client-card "0.1.0-SNAPSHOT"
+(defproject medical-client-card "0.1.0-SNAPSHOT"
   :description "Demo CRUD app"
   :url "https://github.com/kakoi-to-pirat/crud-clojure"
 
@@ -40,8 +40,7 @@
   :cljsbuild {:builds {:dev {:figwheel {:on-jsload "client.core/mount-root"
                                         :open-urls ["http://localhost:3449/"]}
 
-                             :source-paths ["src/client_card/client"
-                                            "env/dev/client_card/client"]
+                             :source-paths ["src/client" "env/dev/client"]
 
                              :compiler {:main "client.dev"
                                         :asset-path "/js/out"
@@ -53,8 +52,7 @@
                                         :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
                                         :preloads [day8.re-frame-10x.preload]}}
 
-                       :prod {:source-paths ["src/client_card/client"
-                                             "env/prod/client_card/client"]
+                       :prod {:source-paths ["src/client" "env/prod/client"]
 
                               :compiler {:output-to  "target/cljsbuild/public/js/app.js"
                                          :output-dir "target/cljsbuild/public/js"
@@ -63,7 +61,7 @@
                                          :infer-externs true
                                          :pretty-print  false}}
 
-                       :test {:source-paths ["src/client_card/client" "test/client_card/client"]
+                       :test {:source-paths ["src/client" "test/client"]
                               :compiler {:main client.doo-runner
                                          :asset-path "/js/out"
                                          :output-to "target/test.js"
@@ -75,13 +73,14 @@
         :alias {:default [:chrome]}}
 
   :figwheel {:css-dirs ["resources/public"]
-             :ring-handler client-card.server.core/app}
+             :nrepl-middleware [cider.piggieback/wrap-cljs-repl]
+             :ring-handler server.core/app}
 
   :min-lein-version "2.5.0"
-  :main client-card.server.core
+  :main server.core
 
-  :profiles {:dev {:main client-card.server.dev/-main-dev
-                   :repl-options {:init-ns client-card.server.dev
+  :profiles {:dev {:main server.dev/-main-dev
+                   :repl-options {:init-ns server.dev
                                   :nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
 
                    :dependencies [[binaryage/devtools "1.0.2"]
@@ -106,6 +105,7 @@
              :test {:env {:environment "test"}}
 
              :uberjar {:prep-tasks ["compile" ["cljsbuild" "once" "prod"]]
+                       :source-paths ["src" "env/prod"]
                        :uberjar-name "client-card.jar"
                        :aot :all
                        :omit-source true
