@@ -115,9 +115,12 @@
     background: none;
 }
 
-.card-form__submit
+.card-form__submit,
+.card-form__clear
 {
+    padding: 8px 0;
     font-size: 1.2rem;
+    margin-bottom: 15px;
 }
 
 .cards-list

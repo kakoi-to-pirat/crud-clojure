@@ -4,6 +4,9 @@
             [re-frame.core :as rf]
             [medical-card.store :refer []]))
 
+(defn on-delete-card [id]
+  (rf/dispatch [:delete-card id]))
+
 (defn cards-list-template []
   (if @(rf/subscribe [:loading?])
     [:div "Please wait while cards is loading..."]
@@ -21,7 +24,7 @@
       (map-indexed
        (fn [index card]
          (let [{:keys [id full_name gender address birthday id_policy]} card]
-           [:tr {:key (+ index id)
+           [:tr {:key index
                  :class "cards-list__item"}
             [:th id_policy]
             [:th full_name]
@@ -31,12 +34,9 @@
             [:th {:width 60} [:a {:class "cards-list__item-button app__button"
                                   :href (route/path-for :card-edit {:id id})}
                               "Edit"]]
-            [:th {:width 60} [:form {:class "cards-list__item-form"
-                                     :action (str "/card/delete/" id)
-                                     :method "POST"}
-                              [:button {:class "cards-list__item-button app__button"
-                                        :type "submit"}
-                               "Delete"]]]]))
+            [:th {:width 60} [:button {:class "cards-list__item-button app__button"
+                                       :on-click #(on-delete-card id)}
+                              "Delete"]]]))
        @(rf/subscribe [:cards]))]]))
 
 (defn cards-list []

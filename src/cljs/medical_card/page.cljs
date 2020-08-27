@@ -1,11 +1,12 @@
 (ns medical-card.page
   (:require [medical-card.route :as route]
             [medical-card.cards-list :as cards-list]
+            [medical-card.card-form :as card-form]
             [reagent.session :as session]))
 
 (def navigation [:nav {:class "card-section__navbar"}
                  [:a {:class "card-section__navbar-link app__button" :href (route/path-for :index)} "Home"]
-                 [:a {:class "card-section__navbar-link app__button" :href (route/path-for :card-add)} "Add cart"]
+                 [:a {:class "card-section__navbar-link app__button" :href (route/path-for :card-add)} "Cart"]
                  [:a {:class "card-section__navbar-link app__button" :href (route/path-for :about)} "About"]])
 
 (defn template [content]
@@ -23,11 +24,7 @@
 
 (defn card-edit-page []
   (let [card-id (get-in (session/get :route) [:route-params :id])]
-    [:div
-     [:h1 "card-edit"]
-     [:p "card-edit " card-id]]))
+    (card-form/card-form card-id)))
 
 (defn card-add-page []
-  [:div
-   [:h1 "card-add"]
-   [:p "card-add"]])
+  (card-form/card-form))

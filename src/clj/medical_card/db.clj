@@ -63,6 +63,11 @@
                                     id, full_name, gender, address, birthday::VARCHAR, id_policy 
                                     FROM cards WHERE id = ?" id]))
 
+(defn get-card-by-policy-id [id]
+  (sql/query (config/get-db-spec) ["SELECT
+                                    id, full_name, gender, address, birthday::VARCHAR, id_policy 
+                                    FROM cards WHERE id_policy = ?" id]))
+
 (defn create-card [data]
   (let [{:keys [full_name, gender, address, birthday, id_policy]} data]
     (sql/execute! (config/get-db-spec) ["INSERT INTO 

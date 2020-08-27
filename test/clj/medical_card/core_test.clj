@@ -28,7 +28,7 @@
           cards-from-response (json/read-str body :key-fn keyword)]
       (is (= status 200))
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
-      (is (= cards-from-response [(first fixtures/cards)])))))
+      (is (= cards-from-response (first fixtures/cards))))))
 
 (deftest card-update
   (testing "Card was updated"
@@ -41,13 +41,11 @@
                                     :request-method :get})
 
           cards-from-response (json/read-str body :key-fn keyword)
-          expected-card (first cards-from-response)
           actual-card (merge {:id 1} fixtures/new-card)]
 
       (is (= status 200))
       (is (= headers {"Content-Type" "application/json; charset=utf-8"}))
-      (is (= (count cards-from-response) 1))
-      (is (= expected-card actual-card)))))
+      (is (= cards-from-response actual-card)))))
 
 (deftest card-save
   (testing "Card was saved"

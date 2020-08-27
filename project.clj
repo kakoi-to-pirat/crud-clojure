@@ -61,7 +61,8 @@
                                         :pretty-print  false}}
 
                        :app {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-                             :figwheel {:on-jsload "medical-card.core/mount-root"}
+                             :figwheel {:on-jsload "medical-card.core/mount-root"
+                                        :open-urls ["http://localhost:3449/"]}
 
                              :compiler {:main "medical-card.dev"
                                         :asset-path "/js/out"
