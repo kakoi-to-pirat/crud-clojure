@@ -2,6 +2,7 @@
   (:require [medical-card.route :as route]
             [medical-card.cards-list :as cards-list]
             [medical-card.card-form :as card-form]
+            [medical-card.message :as message]
             [reagent.session :as session]))
 
 (def navigation [:nav {:class "card-section__navbar"}
@@ -13,7 +14,8 @@
   [:section {:class "card-section"}
    [:h1 {:class "app__header"} "Client cards manager"]
    navigation
-   content])
+   content
+   (message/message)])
 
 (defn home-page [] [cards-list/cards-list])
 

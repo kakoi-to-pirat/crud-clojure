@@ -33,7 +33,6 @@
     background: #cacaca;
 }
 
-
 .app__header
 {
     font-size: 1.5rem;
@@ -118,9 +117,10 @@
 .card-form__submit,
 .card-form__clear
 {
-    padding: 8px 0;
     font-size: 1.2rem;
+
     margin-bottom: 15px;
+    padding: 8px 0;
 }
 
 .cards-list
@@ -160,6 +160,43 @@
 .cards-list__item-form
 {
     display: inline-block;
+}
+
+.msg-box
+{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    padding: 14px 25px;
+
+    background-color: #eee;
+}
+
+.msg-box__header
+{
+    font-size: 1.25rem;
+}
+
+.msg-box__msg
+{
+    font-size: 1.2rem;
+}
+
+.success-box
+{
+    background-color: #d8f1e0;
+}
+
+.failure-box
+{
+    background-color: #ecc4c4;
+}
+
+.hidden
+{
+    display: none;
 }
 
 @media screen and (max-width: 421px)

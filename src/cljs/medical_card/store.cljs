@@ -60,15 +60,27 @@
 
 (rf/reg-event-db
  :on-failure
- (fn [db [_ error-res]]
+ (fn [db [_ res]]
+   (js/console.log (get-in res [:response :error]))
    (-> db
        (assoc :loading?  false)
-       (assoc :error (str error-res)))))
+       (assoc :message {:type "failure"
+                        :content (get-in res [:response :error])}))))
+
+
+;;-------------------------
+;; Message
+
+
+(rf/reg-event-db
+ :hide-message
+ (fn [db [_]]
+   (assoc db :message nil)))
 
 (rf/reg-sub
- :error
+ :message
  (fn [db _]
-   (get-in db [:error] nil)))
+   (get-in db [:message] nil)))
 
 
 ;;-------------------------
@@ -107,6 +119,8 @@
  (fn [db [_ _res]]
    (-> db
        (assoc :loading?  false)
+       (assoc :message {:type "success"
+                        :content "Card was saved!"})
        (assoc :card (:card nil)))))
 
 (rf/reg-event-db
@@ -114,6 +128,8 @@
  (fn [db [_ res]]
    (-> db
        (assoc :loading?  false)
+       (assoc :message {:type "success"
+                        :content "Card was loaded!"})
        (assoc :card res))))
 
 (rf/reg-event-db
@@ -121,6 +137,8 @@
  (fn [db [_ res]]
    (-> db
        (assoc :loading?  false)
+       (assoc :message {:type "success"
+                        :content "Card was deleted!"})
        (assoc :cards
               (filter #(not= (:id %)
                              (js/parseInt (:deleted-card-id res)))

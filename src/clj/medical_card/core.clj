@@ -12,6 +12,11 @@
 (defn response-error [error]
   (status (response {:error (.getMessage error)}) 500))
 
+(defn validate-card [data]
+  (let [{:keys [id_policy]} data]
+    (if (first (db/get-card-by-policy-id (Integer. id_policy)))
+      (throw (Exception. "A client with such a policy already exists"))
+      true)))
 
 ;; -------------------------
 ;; HANDLERS
@@ -43,6 +48,7 @@
   (let [{:keys [params]} request
         {:keys [id_policy]} params]
     (try
+      (validate-card params)
       (db/create-card params)
       (response {:card (-> (Integer. id_policy)
                            db/get-card-by-policy-id
