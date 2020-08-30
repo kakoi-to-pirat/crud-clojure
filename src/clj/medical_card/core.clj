@@ -102,6 +102,9 @@
 ;; SERVER
 
 
+;; (defn my-app [_res] {:status 200 :body "Hello!"})
+
+
 (defn start-server [& [port]]
   (let [port (Integer. (or port (env "PORT") 3000))]
     (webserver/run-jetty app {:port port})))

@@ -6,6 +6,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[cljs-ajax "0.8.0"]
+                 [cider/cider-nrepl "0.25.2"]
                  [compojure "1.6.1"]
                  [day8.re-frame/http-fx "0.2.1"]
                  [environ "1.2.0"]
